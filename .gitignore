@@ -1,0 +1,11 @@
+.DS_Store
+
+target/
+
+.gitattributes
+.class
+.idea
+.iml
+.jar
+maven-wrapper.jar
+HELP.md
