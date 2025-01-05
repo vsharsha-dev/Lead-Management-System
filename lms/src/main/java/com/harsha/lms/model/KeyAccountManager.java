@@ -19,6 +19,7 @@ public class KeyAccountManager {
 
     private String name;
     private String email;
+    private String timeZone;
 
     @OneToMany(mappedBy = "keyAccountManager", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Lead> leads;
