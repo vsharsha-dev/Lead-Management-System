@@ -130,17 +130,29 @@ public class LeadController {
 
     /**** Key Account Manager endpoints within LeadController ****/
 
-    // Get all leads of a KAM
-    @GetMapping("kam/{kamId}")
-    public ResponseEntity<?> getLeadsByKamId(@PathVariable Long id) {
-        try{
-            List<Lead> leads = kamService.getLeadsByKamId(id);
-            return new ResponseEntity<>(leads, HttpStatus.OK);
-        }
-        catch (EntityNotFoundException e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        }
-    }
+//    // Get all leads of a KAM
+//    @GetMapping("kam/{kamId}")
+//    public ResponseEntity<?> getLeadsByKamId(@PathVariable Long id) {
+//        try{
+//            List<Lead> leads = kamService.getLeadsByKamId(id);
+//            return new ResponseEntity<>(leads, HttpStatus.OK);
+//        }
+//        catch (EntityNotFoundException e){
+//            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+//        }
+//    }
+//
+//    // Get all leads of a KAM with given status
+//    @GetMapping("kam/{kamId}")
+//    public ResponseEntity<?> getLeadsByStatus(@RequestParam(name = "status") String status, @PathVariable Long kamId) {
+//        try{
+//            List<Lead> leads = kamService.getLeadsByStatus(status, kamId);
+//            return new ResponseEntity<>(leads, HttpStatus.OK);
+//        }
+//        catch (EntityNotFoundException e){
+//            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+//        }
+//    }
 
     // Get all Leads which require call today
     @GetMapping("/kam/{kamId}/calls-today")

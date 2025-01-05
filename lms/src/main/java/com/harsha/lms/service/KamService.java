@@ -7,7 +7,9 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -15,6 +17,17 @@ public class KamService {
 
     @Autowired
     private KamRepo kamRepo;
+
+//    private Map<String, String> statusMap = new HashMap<>();
+
+//    public KamService(){
+//        this.statusMap.put("new", "NEW");
+//        this.statusMap.put("inprogress", "IN_PROGRESS");
+//        this.statusMap.put("won", "WON");
+//        this.statusMap.put("lost", "LOST");
+//        this.statusMap.put("onhold", "ON_HOLD");
+//        this.statusMap.put("archived", "ARCHIVED");
+//    }
 
     public List<KeyAccountManager> getAllKams() {
         return kamRepo.findAll();
@@ -47,5 +60,14 @@ public class KamService {
     public List<Lead> getLeadsByKamId(Long id) {
         KeyAccountManager kam = kamRepo.findById(id.intValue()).orElseThrow(() -> new EntityNotFoundException("Could not find KAM with id: "+id));
         return kam.getLeads();
+    }
+
+
+    public List<Lead> getLeadsByStatus(String status, Long kamId) {
+        KeyAccountManager kam = kamRepo.findById(kamId.intValue()).orElseThrow(() -> new EntityNotFoundException("Could not find KAM with id: "+kamId));
+        return kam.getLeads().stream()
+                .filter(lead -> String.valueOf(lead.getStatus()).replace("_", "").toLowerCase().equals(status))
+                .toList();
+
     }
 }

@@ -74,4 +74,16 @@ public class KamController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
+
+    // Get all leads of a KAM with given status
+    @GetMapping("/{kamId}/leads/status")
+    public ResponseEntity<?> getLeadsByStatus(@RequestParam String status, @PathVariable Long kamId) {
+        try{
+            List<Lead> leads = kamService.getLeadsByStatus(status, kamId);
+            return new ResponseEntity<>(leads, HttpStatus.OK);
+        }
+        catch (EntityNotFoundException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
 }
