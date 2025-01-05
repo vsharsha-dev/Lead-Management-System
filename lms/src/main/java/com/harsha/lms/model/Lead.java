@@ -1,5 +1,6 @@
 package com.harsha.lms.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -38,16 +39,20 @@ public class Lead {
     private String timeZone; // Stores the lead's time zone
 
     @OneToMany(mappedBy = "lead", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Contact> contacts;
 
     @OneToMany(mappedBy = "lead", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<CallLog> callLogs;
 
     @OneToMany(mappedBy = "lead", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Order> orders;
 
     @ManyToOne
     @JoinColumn(name = "kam_id")
+    @JsonManagedReference
     private KeyAccountManager keyAccountManager;
 
     public enum Status {

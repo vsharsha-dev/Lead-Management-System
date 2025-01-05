@@ -1,5 +1,6 @@
 package com.harsha.lms.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,6 +30,7 @@ public class Contact {
 
     @ManyToOne
     @JoinColumn(name = "lead_id")
+    @JsonBackReference
     private Lead lead;
 
 //    public Contact(String name, Role role, String email, String phone, Lead lead) {

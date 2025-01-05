@@ -1,5 +1,6 @@
 package com.harsha.lms.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,6 +23,7 @@ public class KeyAccountManager {
     private String timeZone;
 
     @OneToMany(mappedBy = "keyAccountManager", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
     private List<Lead> leads;
 
 //    public KeyAccountManager(String name, String email) {

@@ -108,7 +108,7 @@ public class LeadService {
         ZoneId kamZoneId = ZoneId.of(kam.getTimeZone());
         return leadRepo.findAll().stream()
                 .filter(lead -> {
-                    if(lead.getStatus().equals(Lead.Status.IN_PROGRESS)){
+                    if(lead.getStatus().equals(Lead.Status.IN_PROGRESS) && lead.getKeyAccountManager().getId().equals(kamId)){
                         LocalDateTime lastCallDateInKamTime = lead.getLastCallDate();
                         LocalDateTime thresholdDate = lastCallDateInKamTime.plusDays(lead.getCallFrequency());
                         return thresholdDate.toLocalDate().equals(LocalDateTime.now(kamZoneId).toLocalDate());
