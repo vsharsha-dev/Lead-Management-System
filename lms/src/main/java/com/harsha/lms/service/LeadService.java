@@ -1,12 +1,10 @@
 package com.harsha.lms.service;
 
-import com.harsha.lms.model.CallLog;
-import com.harsha.lms.model.Contact;
-import com.harsha.lms.model.KeyAccountManager;
-import com.harsha.lms.model.Lead;
+import com.harsha.lms.model.*;
 import com.harsha.lms.repo.ContactRepo;
 import com.harsha.lms.repo.KamRepo;
 import com.harsha.lms.repo.LeadRepo;
+import com.harsha.lms.repo.OrderRepo;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +28,9 @@ public class LeadService {
 
     @Autowired
     private KamRepo kamRepo;
+
+    @Autowired
+    private OrderRepo orderRepo;
 
 
     public List<Lead> getAllLeads() {
@@ -83,27 +84,6 @@ public class LeadService {
 
     // Get Today's Required Call Count
     public List<Lead> getLeadsRequiringCallsToday(Long kamId) {
-//        KeyAccountManager kam = kamRepo.findById(kamId.intValue()).orElseThrow(() -> new EntityNotFoundException("KAM with id "+kamId+" not found"));
-//        ZoneId kamZoneId = ZoneId.of(kam.getTimeZone());
-//        LocalDateTime currentKamZoneTime = LocalDateTime.now(kamZoneId);
-//        return leadRepo.findAll().stream()
-//                .filter(lead -> {
-//                    if(lead.getKeyAccountManager() != null){
-//                        ZoneId leadZoneId = ZoneId.of(lead.getTimeZone());
-//
-//                        // Convert lastCallDate to LeadTimeZone and add callFrequency
-//                        ZonedDateTime kamZoneLeadLastCallDate = ZonedDateTime.of(lead.getLastCallDate(), kamZoneId);
-//                        ZonedDateTime leadZoneLeadLastCallDate = kamZoneLeadLastCallDate.withZoneSameInstant(leadZoneId);
-//                        ZonedDateTime thresholdDate = leadZoneLeadLastCallDate.plusDays(lead.getCallFrequency());
-//
-//                        // Convert Threshold date again to KAM time zone and compare with current KAM date
-//                        ZonedDateTime thresholdDateInKamZone = thresholdDate.withZoneSameInstant(kamZoneId);
-//                        return thresholdDateInKamZone.toLocalDate().equals(currentKamZoneTime.toLocalDate());
-//                    }
-//                    return false;
-//                })
-//                .toList();
-
         KeyAccountManager kam = kamRepo.findById(kamId.intValue()).orElseThrow(() -> new EntityNotFoundException("KAM with id "+kamId+" not found"));
         ZoneId kamZoneId = ZoneId.of(kam.getTimeZone());
         return leadRepo.findAll().stream()
@@ -200,6 +180,10 @@ public class LeadService {
 
     }
 
+
+
+    /**** Calls related Services ***/
+
     public List<CallLog> getCallLogsByLeadId(Long leadId) {
         Lead lead = leadRepo.findById(leadId.intValue()).orElseThrow(() -> new EntityNotFoundException("Lead with id "+ leadId+ " not found"));
         return lead.getCallLogs();
@@ -212,5 +196,23 @@ public class LeadService {
         l.setLastCallDate(log.getCallDate());
 
         leadRepo.save(l);
+    }
+
+
+
+    /**** Order related services ****/
+
+    public String placeOrderForLead(Long leadId, Order order) {
+        Lead l = leadRepo.findById(leadId.intValue()).orElseThrow(() -> new EntityNotFoundException("Lead with id "+leadId+" not found"));
+        order.setOrderDate(LocalDateTime.now(ZoneId.of(l.getKeyAccountManager().getTimeZone())).truncatedTo(ChronoUnit.SECONDS));
+        order.setLead(l);
+        l.getOrders().add(order);
+        leadRepo.save(l);
+        return "Order placed";
+    }
+
+    public String deleteOrder(Long leadId, Long orderId) {
+        orderRepo.deleteById(orderId.intValue());
+        return "Order "+orderId+" deleted";
     }
 }

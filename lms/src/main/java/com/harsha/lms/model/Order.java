@@ -2,6 +2,7 @@ package com.harsha.lms.model;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,7 +26,7 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "lead_id")
-    @JsonBackReference
+    @JsonIgnore
     private Lead lead;
 
 

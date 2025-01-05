@@ -3,6 +3,7 @@ package com.harsha.lms.controller;
 import com.harsha.lms.model.CallLog;
 import com.harsha.lms.model.Contact;
 import com.harsha.lms.model.Lead;
+import com.harsha.lms.model.Order;
 import com.harsha.lms.service.CallLogService;
 import com.harsha.lms.service.KamService;
 import com.harsha.lms.service.LeadService;
@@ -130,30 +131,6 @@ public class LeadController {
 
     /**** Key Account Manager endpoints within LeadController ****/
 
-//    // Get all leads of a KAM
-//    @GetMapping("kam/{kamId}")
-//    public ResponseEntity<?> getLeadsByKamId(@PathVariable Long id) {
-//        try{
-//            List<Lead> leads = kamService.getLeadsByKamId(id);
-//            return new ResponseEntity<>(leads, HttpStatus.OK);
-//        }
-//        catch (EntityNotFoundException e){
-//            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-//        }
-//    }
-//
-//    // Get all leads of a KAM with given status
-//    @GetMapping("kam/{kamId}")
-//    public ResponseEntity<?> getLeadsByStatus(@RequestParam(name = "status") String status, @PathVariable Long kamId) {
-//        try{
-//            List<Lead> leads = kamService.getLeadsByStatus(status, kamId);
-//            return new ResponseEntity<>(leads, HttpStatus.OK);
-//        }
-//        catch (EntityNotFoundException e){
-//            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-//        }
-//    }
-
     // Get all Leads which require call today
     @GetMapping("/kam/{kamId}/calls-today")
     public ResponseEntity<List<Lead>> getLeadsRequiringCallsToday(@PathVariable Long kamId) {
@@ -175,14 +152,6 @@ public class LeadController {
             return new ResponseEntity<>(e2.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
-
-
-//    // Call a Lead
-//    @PostMapping("/{leadId}/call")
-//    public ResponseEntity<?> callLead(@PathVariable Long leadId){
-//
-//    }
-
 
 
     /**** Call Logs endpoints within Lead Controller ****/
@@ -215,5 +184,39 @@ public class LeadController {
         }
     }
 
+
+
+    /**** Order Management endpoints ****/
+
+    @GetMapping("/{leadId}/orders")
+    public ResponseEntity<?> getAllOrdersByLead(@PathVariable Long leadId){
+        try {
+            List<Order> orders = leadService.getLead(leadId).getOrders();
+            return new ResponseEntity<>(orders, HttpStatus.OK);
+        }
+        catch (RuntimeException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping("/{leadId}/orders")
+    public ResponseEntity<?> placeOrder(@PathVariable Long leadId, @RequestBody Order order){
+        try{
+            return new ResponseEntity<>(leadService.placeOrderForLead(leadId, order), HttpStatus.OK);
+        }
+        catch (EntityNotFoundException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping("/{leadId}/orders/{orderId}")
+    public ResponseEntity<?> deleteOrder(@PathVariable Long leadId, @PathVariable Long orderId){
+        try{
+            return new ResponseEntity<>(leadService.deleteOrder(leadId, orderId), HttpStatus.OK);
+        }
+        catch (RuntimeException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 
 }
